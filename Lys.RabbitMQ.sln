@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lys.Service", "Lys.Service\Lys.Service.csproj", "{0F78CD58-C545-45F2-8FF1-0F47B00697FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lys.Test", "Lys.Test\Lys.Test.csproj", "{8716C5BC-E1F1-4039-8273-73777D3754ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lys.Portal", "Lys.Portal\Lys.Portal.csproj", "{1EFD59AA-DACF-41A0-8DD9-13A38BA6CF3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lys.MQConsumer.Biz.Portal", "Lys.MQConsumer.Biz.Portal\Lys.MQConsumer.Biz.Portal.csproj", "{6EAC649D-1A04-4246-93C6-DD0B04146889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lys.Test", "Lys.Test\Lys.Test.csproj", "{8716C5BC-E1F1-4039-8273-73777D3754ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lys.MQConsumer.PortalBase", "Lys.MQConsumer.PortalBase\Lys.MQConsumer.PortalBase.csproj", "{69DBC600-A95E-428E-A0D4-65FD066144D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lys.MQConsumer.Service", "Lys.MQConsumer.Service\Lys.MQConsumer.Service.csproj", "{4AA12C84-7270-4C1B-B964-B34D6ED522E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0F78CD58-C545-45F2-8FF1-0F47B00697FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F78CD58-C545-45F2-8FF1-0F47B00697FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F78CD58-C545-45F2-8FF1-0F47B00697FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F78CD58-C545-45F2-8FF1-0F47B00697FA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1EFD59AA-DACF-41A0-8DD9-13A38BA6CF3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1EFD59AA-DACF-41A0-8DD9-13A38BA6CF3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1EFD59AA-DACF-41A0-8DD9-13A38BA6CF3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1EFD59AA-DACF-41A0-8DD9-13A38BA6CF3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8716C5BC-E1F1-4039-8273-73777D3754ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8716C5BC-E1F1-4039-8273-73777D3754ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8716C5BC-E1F1-4039-8273-73777D3754ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8716C5BC-E1F1-4039-8273-73777D3754ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EAC649D-1A04-4246-93C6-DD0B04146889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAC649D-1A04-4246-93C6-DD0B04146889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EAC649D-1A04-4246-93C6-DD0B04146889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EAC649D-1A04-4246-93C6-DD0B04146889}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69DBC600-A95E-428E-A0D4-65FD066144D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69DBC600-A95E-428E-A0D4-65FD066144D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69DBC600-A95E-428E-A0D4-65FD066144D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69DBC600-A95E-428E-A0D4-65FD066144D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AA12C84-7270-4C1B-B964-B34D6ED522E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA12C84-7270-4C1B-B964-B34D6ED522E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AA12C84-7270-4C1B-B964-B34D6ED522E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA12C84-7270-4C1B-B964-B34D6ED522E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
