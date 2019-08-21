@@ -5,6 +5,7 @@ using PeterKottas.DotNetCore.WindowsService.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace Lys.MQConsumer.PortalBase
         private readonly ILogger m_Logger;
         private readonly CancellationTokenSource m_CancellationToken;
 
-        public MainService(IServiceProvider serviceProvider, RabbitMQSetting rabbitMQSetting, ILogger<MainService> logger)
+        public MainService(IServiceProvider serviceProvider, RabbitMQSetting rabbitMQSetting, ILogger logger)
         {
             m_ServiceProvider = serviceProvider;
             m_RabbitMQSetting = rabbitMQSetting;
@@ -44,20 +45,30 @@ namespace Lys.MQConsumer.PortalBase
 
                 var connection = connectFactory.CreateConnection();
                 var channel = connection.CreateModel();
+
                 m_CancellationToken.Token.Register(() =>
                 {
                     m_Logger.LogInformation("关闭 RabbitMQ 连接");
                     channel.Close();
                     connection.Close();
                 });
+                
+                channel.QueueDeclare(queue: m_RabbitMQSetting.QueueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-                var queueName = m_RabbitMQSetting.QueueName;
-
-                channel.QueueDeclare(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
                 if (m_RabbitMQSetting.IsDelayQueue)
                 {
-                    channel.QueueBind(queue: queueName, exchange: m_RabbitMQSetting.Exchange, routingKey: m_RabbitMQSetting.RoutingDelayKey);
+                    var queueArgs = new Dictionary<string, object>
+                    {
+                        { "x-dead-letter-exchange", m_RabbitMQSetting.Exchange},
+                        { "x-dead-letter-routing-key", m_RabbitMQSetting.RoutingDelayKey}
+                    };
+                    channel.QueueDeclare(queue: $"DL-{m_RabbitMQSetting.QueueName}", durable: true, exclusive: false, autoDelete: false, arguments: queueArgs);
+
+                    channel.ExchangeDeclare(exchange: m_RabbitMQSetting.Exchange, type: m_RabbitMQSetting.ExchangeType);
+                    channel.QueueBind(queue: m_RabbitMQSetting.QueueName, exchange: m_RabbitMQSetting.Exchange, routingKey: m_RabbitMQSetting.RoutingDelayKey);
+                    channel.QueueBind(queue: $"DL-{m_RabbitMQSetting.QueueName}", exchange: m_RabbitMQSetting.Exchange, routingKey: $"DL-{m_RabbitMQSetting.RoutingDelayKey}");
                 }
+
                 channel.BasicQos(prefetchSize: 0, prefetchCount: m_RabbitMQSetting.PrefetchCount, global: false);
 
                 var consumer = new AsyncEventingBasicConsumer(channel);
@@ -65,7 +76,7 @@ namespace Lys.MQConsumer.PortalBase
 
                 for (var i = 0; i < m_RabbitMQSetting.ConsumerCount; i++)
                 {
-                    channel.BasicConsume(queue: queueName, autoAck: false, consumer: consumer);
+                    channel.BasicConsume(queue: m_RabbitMQSetting.QueueName, autoAck: false, consumer: consumer);
                 }
 
                 m_Logger.LogInformation($"启动 RabbitMQ 接收。Consumer数：{m_RabbitMQSetting.ConsumerCount}");

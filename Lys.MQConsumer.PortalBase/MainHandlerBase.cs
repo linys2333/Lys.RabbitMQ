@@ -15,13 +15,13 @@ namespace Lys.MQConsumer.PortalBase
             m_Logger = logger;
         }
 
-        public async Task<bool> RunAsync(string message)
+        public Task<bool> RunAsync(string message)
         {
             var consumerInfo = JsonConvert.DeserializeObject<T>(message);
 
             BaseService.Init(consumerInfo.UserId);
 
-            return await RunAsync(consumerInfo);
+            return RunAsync(consumerInfo);
         }
 
         protected abstract Task<bool> RunAsync(T consumerInfo);

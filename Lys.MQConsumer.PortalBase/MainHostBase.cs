@@ -1,8 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Lys.MQConsumer.PortalBase.Settings;
-using Lys.MQConsumer.Service.Stores;
-using Microsoft.EntityFrameworkCore;
+using Lys.MQConsumer.Service.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,7 @@ using NLog.Extensions.Logging;
 using PeterKottas.DotNetCore.WindowsService;
 using System;
 using System.Reflection;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Lys.MQConsumer.PortalBase
 {
@@ -38,7 +38,7 @@ namespace Lys.MQConsumer.PortalBase
 
         public virtual void Run()
         {
-            var logger = m_Services.GetRequiredService<ILogger<MainHostBase>>();
+            var logger = m_Services.GetRequiredService<ILogger>();
             logger.LogInformation($"启动程序，运行环境：{m_EnvName}");
 
             ServiceRunner<MainService>.Run(config =>
@@ -80,15 +80,13 @@ namespace Lys.MQConsumer.PortalBase
             var services = new ServiceCollection();
 
             services.AddSingleton(m_Config);
-            services.AddSingleton<ILoggerFactory, LoggerFactory>();
-            var logger = new LoggerFactory().CreateLogger("Lys.MQConsumer");
-            services.AddSingleton(logger);
+
+            var loggerFactory = new LoggerFactory();
+            services.AddSingleton<ILoggerFactory>(loggerFactory);
+            services.AddSingleton(loggerFactory.CreateLogger("Lys.MQConsumer"));
 
             services.AddSingleton(m_Config.GetSection("RabbitMQ").Get<RabbitMQSetting>());
             services.AddSingleton<MainService>();
-
-            services.AddMemoryCache();
-            services.AddDbContextPool<MySQLDbContext>(opt => opt.UseMySql(m_Config.GetConnectionString("MySQL")));
 
             RegisterServices(services);
 
@@ -96,7 +94,7 @@ namespace Lys.MQConsumer.PortalBase
             builder.Populate(services);
 
             builder.RegisterAssemblyTypes(Assembly.Load("Lys.MQConsumer.Service"))
-                .AsImplementedInterfaces()
+                .Where(t => typeof(BaseService).IsAssignableFrom(t) && !t.IsAbstract)
                 .AsSelf();
 
             RegisterServices(builder);

@@ -2,7 +2,7 @@
 using Lys.MQConsumer.PortalBase;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Lys.MQConsumer.Biz.Portal
+namespace Lys.MQConsumer.Sample.Portal
 {
     public class MainHost : MainHostBase
     {

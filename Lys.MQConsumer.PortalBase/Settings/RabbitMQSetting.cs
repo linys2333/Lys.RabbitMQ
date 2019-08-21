@@ -19,7 +19,7 @@
         public string Exchange { get; set; }
 
         public string ExchangeType { get; set; }
-
+        
         public string RoutingDelayKey { get; set; }
 
         public int ConsumerCount { get; set; } = 1;

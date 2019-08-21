@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Lys.MQConsumer.Biz.Portal
+namespace Lys.MQConsumer.Sample.Portal
 {
     public class Program
     {
@@ -12,7 +12,7 @@ namespace Lys.MQConsumer.Biz.Portal
             {
                 Directory.CreateDirectory(PortalConstants.Paths.LogDir);
                 new MainHost().Run();
-                Console.Read();
+                Console.ReadLine();
             }
             catch (Exception ex)
             {

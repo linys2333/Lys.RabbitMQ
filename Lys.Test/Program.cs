@@ -7,9 +7,11 @@ namespace Lys.Test
 {
     class Program
     {
+        private static ConnectionFactory m_ConnectionFactory;
+         
         static void Main(string[] args)
         {
-            var connectFactory = new ConnectionFactory
+            m_ConnectionFactory = new ConnectionFactory
             {
                 HostName = "localhost",
                 UserName = "guest",
@@ -19,16 +21,42 @@ namespace Lys.Test
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10)
             };
-            
-            using (var channel = connectFactory.CreateConnection().CreateModel())
+
+            Enqueue("test", new
             {
-                channel.QueueDeclare(queue: "test", durable: true, exclusive: false, autoDelete: false, arguments: null);
-                channel.BasicPublish(exchange: "", routingKey: "test", basicProperties: null,
-                    body: Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new
-                    {
-                        UserId = "386E8A2F-8C51-4958-BA34-60CF6F521D03",
-                        FirmId = "00000000-0000-0000-0000-000000000000"
-                    })));
+                UserId = "00000000-0000-0000-0000-000000000000",
+                SampleData = "消息1"
+            });
+
+            DelayEnqueue("exchange-direct", "DL-routing-delay", new
+            {
+                UserId = "00000000-0000-0000-0000-000000000000",
+                SampleData = "消息2"
+            }, 5000);
+
+            Console.WriteLine("发送完毕");
+        }
+
+        public static void Enqueue(string queueName, object data)
+        {
+            using (var channel = m_ConnectionFactory.CreateConnection().CreateModel())
+            {
+                channel.QueueDeclare(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null,
+                    body: Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
+            }
+        }
+
+        public static void DelayEnqueue(string exchange, string routeKey, object data, int delayMillisecond)
+        {
+            using (var channel = m_ConnectionFactory.CreateConnection().CreateModel())
+            {
+                var properties = channel.CreateBasicProperties();
+                properties.DeliveryMode = 2;
+                properties.Expiration = delayMillisecond.ToString();
+
+                channel.BasicPublish(exchange: exchange, routingKey: routeKey, basicProperties: properties,
+                    body: Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data)));
             }
         }
     }
